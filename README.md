@@ -30,13 +30,13 @@ sudo mv go-install-kubernetes /usr/local/bin/
 
 ### Setup Some Virtual Machines
 
-IF you want a single node that is a control plane and worker, create one virtual machine.
+If you want a single node that is a control plane and worker, create one virtual machine.
 
 If you want a control plane and worker, create two or more virtual machines.
 
 > NOTE: The program does not create the virtual machines (nodes). It only installs Kubernetes onto them. This means you can create the nodes in any way you want, but they must exist before running this program.
 
-#### Suggested Node Sizes
+### Suggested Node Sizes
 
 Control Node
 * 4G memory
@@ -55,7 +55,7 @@ Combined Control Plane / Worker / Single Node "Cluster"
 
 ## Usage
 
-```
+```bash
 $ go-install-kubernetes -h
 USAGE:
   go-install-kubernetes [options]
@@ -70,6 +70,7 @@ OPTIONS:
   --export-manifests  Export embedded Calico manifests to disk
 
 At least one of -c, -w, or -s must be specified
+```
 
 ## Install Kubernetes Onto the Nodes
 
