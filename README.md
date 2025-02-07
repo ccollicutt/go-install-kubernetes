@@ -17,7 +17,7 @@ To download the latest release:
 ```bash
 # Get latest version and download the binary
 VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/ccollicutt/go-install-kubernetes/releases/latest))
-curl -Ls -o go-install-kubernetes "https://github.com/ccollicutt/go-install-kubernetes/releases/download/${VERSION}/go-install-kubernetes_linux_amd64"
+curl -Ls -o go-install-kubernetes "https://github.com/ccollicutt/go-install-kubernetes/releases/download/${VERSION}/go-install-kubernetes"
 
 # Make it executable
 chmod +x go-install-kubernetes
