@@ -10,11 +10,28 @@ This is a Go version of the [install-kubernetes](https://github.com/ccollicutt/i
 * Kubernetes from Ubuntu
 * Calico CNI
 
+## Installation
+
+To download the latest release:
+
+```bash
+# Download latest release
+curl -L -o go-install-kubernetes $(curl -s https://api.github.com/repos/ccollicutt/go-install-kubernetes/releases/latest | grep "browser_download_url.*linux_amd64" | cut -d '"' -f 4)
+
+# Make it executable
+chmod +x go-install-kubernetes
+
+# Move to a directory in your PATH (optional)
+sudo mv go-install-kubernetes /usr/local/bin/
+```
+
 ## Usage
 
 ### Setup Some Virtual Machines
 
-Build at least two virtual machines, one for the control plane and one worker. Add more workers if you would like but this program will only be able to setup a single control plane node.
+IF you want a single node that is a control plane and worker, create one virtual machine.
+
+If you want a control plane and worker, create two or more virtual machines.
 
 > NOTE: The program does not create the virtual machines (nodes). It only installs Kubernetes onto them. This means you can create the nodes in any way you want, but they must exist before running this program.
 
@@ -35,6 +52,24 @@ Combined Control Plane / Worker / Single Node "Cluster"
 * 40G disk
 * 4 CPUs
 
+## Usage
+
+```
+$ go-install-kubernetes -h
+USAGE:
+  go-install-kubernetes [options]
+
+OPTIONS:
+  -c  Configure as a control plane node
+  -w  Configure as a worker node
+  -s  Configure as a single node (control plane + worker)
+  -v  Enable verbose output
+  -h  Show this help message
+  --version  Show version information
+  --export-manifests  Export embedded Calico manifests to disk
+
+At least one of -c, -w, or -s must be specified
+
 ## Install Kubernetes Onto the Nodes
 
 Order of Operations
@@ -54,13 +89,7 @@ Normally you would have one control plane node and `x` worker nodes.
 On a control plane node run:
 
 ```
-# Install Go if not already installed
-# Download and install the program
-git clone https://github.com/ccollicutt/go-install-kubernetes
-cd go-install-kubernetes
-go build
-# Note the "-control-plane" flag here
-./go-install-kubernetes -control-plane
+go-install-kubernetes -c
 ```
 
 ### Worker Nodes
@@ -68,10 +97,7 @@ go build
 On a worker node run:
 
 ```
-git clone https://github.com/ccollicutt/go-install-kubernetes
-cd go-install-kubernetes
-go build
-./go-install-kubernetes
+go-install-kubernetes -w
 ```
 
 Then finally connect the worker node to the control plane node with the kubeadm command based on the output of the below which is run on the CP node.
@@ -87,7 +113,7 @@ Run the output of that command on the worker nodes.
 If you'd like a single node "cluster", ie. be able to schedule pods on the control plane, then run with the `-single-node` flag.
 
 ```
-./go-install-kubernetes -single-node
+go-install-kubernetes -s
 ```
 
 This will untaint the control plane node so that pods can be scheduled on it.
