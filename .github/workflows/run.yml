@@ -1,0 +1,62 @@
+name: CI
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  workflow_dispatch:
+jobs:
+  test-control-plane:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download and install Go
+        run: |
+          wget https://go.dev/dl/go1.23.6.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf go1.23.6.linux-amd64.tar.gz
+          echo "PATH=$PATH:/usr/local/go/bin" >> $GITHUB_ENV
+      - name: List directory contents
+        run: |
+          pwd
+          ls -la
+      - name: Build go-install-kubernetes
+        run: go build -o go-install-kubernetes ./main.go
+      - name: Test installing Kubernetes control plane node
+        run: sudo ./go-install-kubernetes -c -v
+  test-worker-node:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download and install Go
+        run: |
+          wget https://go.dev/dl/go1.23.6.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf go1.23.6.linux-amd64.tar.gz
+          echo "PATH=$PATH:/usr/local/go/bin" >> $GITHUB_ENV
+      - name: List directory contents
+        run: |
+          pwd
+          ls -la
+      - name: Build go-install-kubernetes
+        run: go build -o go-install-kubernetes ./main.go
+      - name: Test installing Kubernetes worker node
+        run: sudo ./go-install-kubernetes -v -w
+  test-single-node:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download and install Go
+        run: |
+          wget https://go.dev/dl/go1.23.6.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf go1.23.6.linux-amd64.tar.gz
+          echo "PATH=$PATH:/usr/local/go/bin" >> $GITHUB_ENV
+      - name: List directory contents
+        run: |
+          pwd
+          ls -la
+      - name: Build go-install-kubernetes
+        run: go build -o go-install-kubernetes ./main.go
+      - name: Test installing Kubernetes single node
+        run: sudo ./go-install-kubernetes -s -v
