@@ -15,13 +15,14 @@ This is a Go version of the [install-kubernetes](https://github.com/ccollicutt/i
 To download the latest release:
 
 ```bash
-# Download latest release
-curl -L -o go-install-kubernetes $(curl -s https://api.github.com/repos/ccollicutt/go-install-kubernetes/releases/latest | grep "browser_download_url.*linux_amd64" | cut -d '"' -f 4)
+# Get latest version and download the binary
+VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/ccollicutt/go-install-kubernetes/releases/latest))
+curl -Ls -o go-install-kubernetes "https://github.com/ccollicutt/go-install-kubernetes/releases/download/${VERSION}/go-install-kubernetes_linux_amd64"
 
 # Make it executable
 chmod +x go-install-kubernetes
 
-# Move to a directory in your PATH (optional)
+# Move to a directory in your PATH
 sudo mv go-install-kubernetes /usr/local/bin/
 ```
 
