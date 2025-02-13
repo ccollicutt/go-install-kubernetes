@@ -3,6 +3,7 @@ package install
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"go-install-kubernetes/pkg/config"
@@ -102,16 +103,30 @@ func installKubernetesPackages(cfg *config.Config) error {
 
 	// Download and install GPG key
 	gpgKeyURL := fmt.Sprintf("https://pkgs.k8s.io/core:/stable:/v%s/deb/Release.key", kubeRepoVersion)
-	if _, err := exec.Command(fmt.Sprintf("curl -fsSLo /tmp/k8s-key.gpg %s", gpgKeyURL), cfg); err != nil {
+
+	// Create secure temporary directory
+	tmpDir, err := os.MkdirTemp("", "k8s-gpg-*")
+	if err != nil {
+		return fmt.Errorf("failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	// Set secure permissions
+	if err := os.Chmod(tmpDir, 0700); err != nil {
+		return fmt.Errorf("failed to set permissions on temp directory: %v", err)
+	}
+
+	keyPath := filepath.Join(tmpDir, "k8s-key.gpg")
+	if _, err := exec.Command(fmt.Sprintf("curl -fsSLo %s %s", keyPath, gpgKeyURL), cfg); err != nil {
 		return err
 	}
 
-	if _, err := exec.Command("gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/k8s-key.gpg", cfg); err != nil {
+	if _, err := exec.Command(fmt.Sprintf("gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg %s", keyPath), cfg); err != nil {
 		return err
 	}
 
 	// Clean up temp file
-	os.Remove("/tmp/k8s-key.gpg")
+	os.Remove(keyPath)
 
 	// Add new repo
 	repoContent := fmt.Sprintf("deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v%s/deb/ /", kubeRepoVersion)

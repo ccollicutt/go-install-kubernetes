@@ -32,6 +32,18 @@ func kubeadmInit(cfg *config.Config) error {
 		return fmt.Errorf("could not determine main IP address")
 	}
 
+	// Create secure temporary directory
+	tmpDir, err := os.MkdirTemp("", "kubeadm-*")
+	if err != nil {
+		return fmt.Errorf("failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	// Set secure permissions
+	if err := os.Chmod(tmpDir, 0700); err != nil {
+		return fmt.Errorf("failed to set permissions on temp directory: %v", err)
+	}
+
 	configContent := fmt.Sprintf(`apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: v%s
@@ -39,11 +51,12 @@ networking:
   podSubnet: 192.168.0.0/16
 controlPlaneEndpoint: "%s:6443"`, config.KubeVersion, mainIP)
 
-	if err := os.WriteFile("kubeadm-config.yaml", []byte(configContent), 0644); err != nil {
-		return err
+	configPath := filepath.Join(tmpDir, "kubeadm-config.yaml")
+	if err := os.WriteFile(configPath, []byte(configContent), 0600); err != nil {
+		return fmt.Errorf("failed to write kubeadm config: %v", err)
 	}
 
-	_, err = exec.Command("kubeadm init --config kubeadm-config.yaml", cfg)
+	_, err = exec.Command(fmt.Sprintf("kubeadm init --config %s", configPath), cfg)
 	return err
 }
 

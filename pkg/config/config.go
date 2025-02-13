@@ -14,5 +14,5 @@ const (
 	CalicoVersion     = "3.27.5"
 	UbuntuVersion     = "22.04"
 	KubectlTimeout    = "300s"
-	CLIVersion        = "0.3.1"
+	CLIVersion        = "0.3.2"
 )
