@@ -2,6 +2,10 @@
 
 This is a Go version of the [install-kubernetes](https://github.com/ccollicutt/install-kubernetes) script. It does the same thing, slighltly differently, but is written in Go, so it is a single binary.
 
+## Example Installation
+
+![Install gif](img/install.gif)
+
 ## Stack 
 
 * kubeadm
