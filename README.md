@@ -1,6 +1,6 @@
 # Go Install Kubernetes
 
-This is a Go version of the [install-kubernetes](https://github.com/ccollicutt/install-kubernetes) script. It does the same thing, slighltly differently, but is written in Go, so it is a single binary.
+This program installs Kubernetes onto a single node or multiple nodes using standard Kubernetes components from packages and Kubeadm.
 
 ## Example Installation
 
@@ -143,6 +143,10 @@ go-install-kubernetes -s
 ```
 
 This will untaint the control plane node so that pods can be scheduled on it, giving you a single node cluster that you can use for development.
+
+## Why Use Go For This?
+
+I originally wrote this in Bash, but then I came across `github.com/bitfield/script` which is a fun library to build command line scripts with Go, instead of using a shell script, which was what I had originally done. Plus, the added benefit of having a single binary that is easy to use, and the ability to embed files into the binary.
 
 ## Thanks
 
