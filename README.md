@@ -46,6 +46,12 @@ sudo mv go-install-kubernetes /usr/local/bin/
 
 ## Usage
 
+### Diagram
+
+This diagram looks a little complicted, but all it is showing is that you setup a control plane node, then setup a worker node, then join the worker node to the control plane. This requires running `go-install-kubernetes` on each node, and then running the join command on the worker node(s).
+
+![Diagram](img/diagram.png)
+
 ### Setup Some Virtual Machines
 
 If you want a single node that is a control plane and worker, create one virtual machine.
